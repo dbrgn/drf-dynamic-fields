@@ -1,6 +1,18 @@
 Dynamic Serializer Fields for Django REST Framework
 ===================================================
 
+.. image:: https://img.shields.io/pypi/dm/result.svg
+    :alt: PyPI Downloads
+    :target: https://pypi.python.org/pypi/result
+
+.. image:: https://img.shields.io/codacy/grade/1a91ba7fd0db4724a722bce1c1a646d6/master.svg?maxAge=2592000
+    :alt: Codacy grade
+    :target: 1a91ba7fd0db4724a722bce1c1a646d6
+
+.. image:: https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000
+    :alt: License is MIT
+    :target: https://github.com/dbrgn/drf-dynamic-fields/blob/master/LICENSE
+
 This package provides a mixin that allows the user to dynamically select only a
 subset of fields per resource.
 
