@@ -19,5 +19,7 @@ setup(name='drf_dynamic_fields',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 2',
           'Programming Language :: Python :: 3',
+          'Framework :: Django',
+          'Environment :: Web Environment',
       ],
 )
