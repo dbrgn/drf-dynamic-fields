@@ -8,7 +8,9 @@ subset of fields per resource.
 What It Does
 ------------
 
-Example serializer::
+Example serializer:
+
+.. sourcecode:: python
 
     class IdentitySerializer(serializers.HyperlinkedModelSerializer):
         class Meta:
@@ -19,7 +21,7 @@ A regular request returns all fields:
 
 ``GET /identities``
 
-::
+.. sourcecode:: json
 
     [
       {
@@ -36,7 +38,7 @@ the fields:
 
 ``GET /identities/?fields=id,data``
 
-::
+.. sourcecode:: json
 
     [
       {
@@ -50,7 +52,7 @@ It also works on single objects!
 
 ``GET /identities/1/?fields=id,data``
 
-::
+.. sourcecode:: json
 
     {
       "id": 1,
@@ -60,7 +62,9 @@ It also works on single objects!
 Usage
 -----
 
-When defining a serializer, use the ``DynamicFieldsMixin``::
+When defining a serializer, use the ``DynamicFieldsMixin``:
+
+.. sourcecode:: python
 
     class IdentitySerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         class Meta:
@@ -69,7 +73,9 @@ When defining a serializer, use the ``DynamicFieldsMixin``::
 
 The mixin needs access to the ``request`` object. Some DRF classes like the
 ``ModelViewSet`` set that by default, but if you handle serializers yourself,
-pass in the request through the context::
+pass in the request through the context:
+
+.. sourcecode:: python
 
     events = Event.objects.all()
     serializer = EventSerializer(events, many=True, context={'request': request})
