@@ -18,7 +18,16 @@ class DynamicFieldsMixin(object):
             warnings.warn('Context does not have access to request')
             return
 
-        fields = self.context['request'].query_params.get('fields', None)
+        # NOTE: drf test framework builds a request object where the query
+        #  parameters are found under the GET attribute.
+        if hasattr(self.context['request'], 'query_params'):
+            fields = self.context['request'].query_params.get('fields', None)
+        elif hasattr(self.context['request'], 'GET'):
+            fields = self.context['request'].GET.get('fields', None)
+        else:
+            warnings.warn('Request object does not contain query paramters')
+            return
+
         if fields:
             fields = fields.split(',')
             # Drop any fields that are not specified in the `fields` argument.
