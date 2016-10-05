@@ -19,5 +19,5 @@ Possible log types:
 
  - Initial release
 
-[Unreleased]: https://github.com/dbrgn/drf_dynamic_fields/compare/v0.2.1...HEAD
-[0.1.0]: https://github.com/dbrgn/drf_dynamic_fields/compare/f7e6e2d...v0.1.0
+[Unreleased]: https://github.com/dbrgn/drf-dynamic-fields/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/dbrgn/drf-dynamic-fields/releases/tag/v0.1.0
