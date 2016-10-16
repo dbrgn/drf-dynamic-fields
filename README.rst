@@ -102,6 +102,8 @@ Credits
 - The GitHub users ``X17`` and ``rawbeans`` provided improvements on `my gist
   <https://gist.github.com/dbrgn/4e6fc1fe5922598592d6>`__ that were incorporated
   into this library. Thanks!
+- For other contributors, please see `Github contributor stats
+  <https://github.com/dbrgn/drf-dynamic-fields/graphs/contributors>`__.
 
 
 License
