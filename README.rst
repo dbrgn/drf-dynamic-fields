@@ -7,7 +7,7 @@ Dynamic Serializer Fields for Django REST Framework
 
 .. image:: https://img.shields.io/codacy/grade/1a91ba7fd0db4724a722bce1c1a646d6/master.svg?maxAge=2592000
     :alt: Codacy grade
-    :target: 1a91ba7fd0db4724a722bce1c1a646d6
+    :target: https://www.codacy.com/app/dbrgn/drf-dynamic-fields/dashboard
 
 .. image:: https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000
     :alt: License is MIT
