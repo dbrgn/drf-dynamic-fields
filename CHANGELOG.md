@@ -15,9 +15,14 @@ Possible log types:
 
  - ...
 
+## [0.1.1] - 2016-10-16
+
+ - [fixed] Make it work in an unit test environment (#2)
+
 ## [0.1.0] - 2016-09-30
 
  - Initial release
 
-[Unreleased]: https://github.com/dbrgn/drf-dynamic-fields/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/dbrgn/drf-dynamic-fields/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/dbrgn/drf-dynamic-fields/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/dbrgn/drf-dynamic-fields/releases/tag/v0.1.0
