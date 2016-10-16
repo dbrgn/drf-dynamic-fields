@@ -19,7 +19,7 @@ class DynamicFieldsMixin(object):
             return
 
         # NOTE: drf test framework builds a request object where the query
-        #  parameters are found under the GET attribute.
+        # parameters are found under the GET attribute.
         if hasattr(self.context['request'], 'query_params'):
             fields = self.context['request'].query_params.get('fields', None)
         elif hasattr(self.context['request'], 'GET'):
