@@ -1,3 +1,7 @@
+"""
+Mixin to dynamically select only a subset of fields per DRF resource.
+"""
+
 import warnings
 
 
