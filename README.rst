@@ -5,7 +5,7 @@ Dynamic Serializer Fields for Django REST Framework
     :alt: PyPI Version
     :target: https://pypi.python.org/pypi/drf-dynamic-fields
 
-.. image:: https://img.shields.io/pypi/dm/drf-dynamic-fields.svg
+.. image:: https://img.shields.io/pypi/dm/drf-dynamic-fields.svg?maxAge=3600
     :alt: PyPI Downloads
     :target: https://pypi.python.org/pypi/drf-dynamic-fields
 
