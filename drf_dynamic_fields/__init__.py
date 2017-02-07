@@ -13,6 +13,11 @@ class DynamicFieldsMixin(object):
     @property
     def fields(self):
         fields = super(DynamicFieldsMixin, self).fields
+
+        if not hasattr(self, '_context'):
+            # we are being called before a request cycle.
+            return fields
+
         try:
             request = self.context['request']
         except KeyError:
