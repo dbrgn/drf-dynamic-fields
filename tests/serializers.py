@@ -14,7 +14,14 @@ class TeacherSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         fields = ('id', 'request_info')
 
     def get_request_info(self, teacher):
-        return str(self.context['request'])
+        """
+        a meaningless method that attempts
+        to access the request object.
+        """
+        request = self.context['request']
+        return request.build_absolute_uri(
+            '/api/v1/teacher/{}'.format(teacher.pk)
+        )
 
 
 class SchoolSerializer(serializers.ModelSerializer):
