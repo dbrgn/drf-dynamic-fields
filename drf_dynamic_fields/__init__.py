@@ -12,6 +12,13 @@ class DynamicFieldsMixin(object):
 
     @property
     def fields(self):
+        """
+        Filters the fields according to the `fields` query parameter.
+
+        a blank `fields` parameter (?fields) will remove all fields.
+        not passing `fields` will pass all fields
+        individual fields are comma separated (?fields=id,name,url,email)
+        """
         fields = super(DynamicFieldsMixin, self).fields
 
         if not hasattr(self, '_context'):

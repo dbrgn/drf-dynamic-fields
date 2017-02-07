@@ -1,5 +1,6 @@
-from django.db import models
-
+"""
+For the tests.
+"""
 from rest_framework import serializers
 
 from drf_dynamic_fields import DynamicFieldsMixin
@@ -8,7 +9,13 @@ from .models import Teacher, School
 
 
 class TeacherSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+    """
+    The request_info field is to highlight the issue accessing request during
+    a nested serializer.
+    """
+
     request_info = serializers.SerializerMethodField()
+
     class Meta:
         model = Teacher
         fields = ('id', 'request_info')
@@ -25,6 +32,10 @@ class TeacherSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
 
 class SchoolSerializer(serializers.ModelSerializer):
+    """
+    Interesting enough serializer because the TeacherSerializer
+    will use ListSerializer due to the `many=True`
+    """
 
     teachers = TeacherSerializer(many=True, read_only=True)
 
