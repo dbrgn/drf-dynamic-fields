@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8
+"""
+Run tests with python runtests.py
+
+Taken from the django cookiecutter project.
+"""
 from __future__ import unicode_literals, absolute_import
 
 import os
@@ -16,8 +21,7 @@ def run_tests(*test_args):
 
     os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
     django.setup()
-    TestRunner = get_runner(settings)
-    test_runner = TestRunner()
+    test_runner = get_runner(settings)()
     failures = test_runner.run_tests(test_args)
     sys.exit(bool(failures))
 

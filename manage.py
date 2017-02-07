@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Django manage.py, only used for testing.
+"""
 from __future__ import unicode_literals, absolute_import
 
 import os

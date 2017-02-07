@@ -1,4 +1,7 @@
 # -*- coding: utf-8
+"""
+Settings for test.
+"""
 from __future__ import unicode_literals, absolute_import
 
 import django
