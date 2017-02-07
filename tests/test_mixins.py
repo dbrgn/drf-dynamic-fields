@@ -12,11 +12,44 @@ from collections import OrderedDict
 from django.test import TestCase, RequestFactory
 from drf_dynamic_fields import DynamicFieldsMixin
 
-from .serializers import SchoolSerializer
+from .serializers import SchoolSerializer, TeacherSerializer
 from .models import Teacher, School
 
 
 class TestDynamicFieldsMixin(TestCase):
+
+    def test_removes_fields(self):
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?fields=id')
+        serializer = TeacherSerializer(context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id',))
+        )
+
+    def test_fields_left_alone(self):
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/')
+        serializer = TeacherSerializer(context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id', 'request_info'))
+        )
+
+    def test_ordinary_serializer(self):
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?fields=id')
+        teacher = Teacher.objects.create()
+
+        serializer = TeacherSerializer(teacher, context={'request': request})
+
+        self.assertEqual(
+            serializer.data, {
+                'id': teacher.id
+            }
+        )
 
     def test_as_nested_serializer(self):
 
@@ -49,6 +82,3 @@ class TestDynamicFieldsMixin(TestCase):
                 'id': school.id
             }
         )
-
-
-
