@@ -29,7 +29,7 @@ class DynamicFieldsMixin(object):
         params = getattr(
             request, 'query_params', getattr(request, 'GET', None)
         )
-        if not params:
+        if params is None:
             warnings.warn('Request object does not contain query paramters')
 
         try:
