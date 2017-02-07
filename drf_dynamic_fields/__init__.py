@@ -14,7 +14,7 @@ class DynamicFieldsMixin(object):
         super(DynamicFieldsMixin, self).__init__(*args, **kwargs)
 
         # If the context is not set, return
-        if not self.context:
+        if 'context' not in kwargs:
             return
 
         # If the request is not passed in, warn and return
