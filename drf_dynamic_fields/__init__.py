@@ -30,13 +30,27 @@ class DynamicFieldsMixin(object):
         try:
             filter_fields = params.get('fields', None).split(',')
         except AttributeError:
-            return fields
+            filter_fields = []
+
+        try:
+            omit_fields = params.get('omit', None).split(',')
+        except AttributeError:
+            omit_fields = []
 
         # Drop any fields that are not specified in the `fields` argument.
         allowed = set(filter(None, filter_fields))
         existing = set(fields.keys())
 
-        for field in existing - allowed:
-            fields.pop(field)
+        # omit fields in the `omit` argument.
+        omitted = set(filter(None, omit_fields))
+
+
+        for field in reversed(fields):
+
+            if field not in allowed:
+                fields.pop(field)
+
+            if field in omitted:
+                fields.pop(field)
 
         return fields
