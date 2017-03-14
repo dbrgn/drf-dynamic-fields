@@ -10,15 +10,20 @@ Tests for `drf-dynamic-fields` mixins
 from collections import OrderedDict
 
 from django.test import TestCase, RequestFactory
-from drf_dynamic_fields import DynamicFieldsMixin
 
 from .serializers import SchoolSerializer, TeacherSerializer
 from .models import Teacher, School
 
 
 class TestDynamicFieldsMixin(TestCase):
+    """
+    Test case for the DynamicFieldsMixin
+    """
 
     def test_removes_fields(self):
+        """
+        Does it actually remove fields?
+        """
         rf = RequestFactory()
         request = rf.get('/api/v1/schools/1/?fields=id')
         serializer = TeacherSerializer(context={'request': request})
@@ -29,6 +34,9 @@ class TestDynamicFieldsMixin(TestCase):
         )
 
     def test_fields_left_alone(self):
+        """
+        What if no fields param is passed? It should not touch the fields.
+        """
         rf = RequestFactory()
         request = rf.get('/api/v1/schools/1/')
         serializer = TeacherSerializer(context={'request': request})
@@ -38,7 +46,23 @@ class TestDynamicFieldsMixin(TestCase):
             set(('id', 'request_info'))
         )
 
+    def test_fields_all_gone(self):
+        """
+        If we pass a blank fields list, then no fields should return.
+        """
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?fields')
+        serializer = TeacherSerializer(context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set()
+        )
+
     def test_ordinary_serializer(self):
+        """
+        Check the full JSON output of the serializer.
+        """
         rf = RequestFactory()
         request = rf.get('/api/v1/schools/1/?fields=id')
         teacher = Teacher.objects.create()
@@ -52,6 +76,9 @@ class TestDynamicFieldsMixin(TestCase):
         )
 
     def test_as_nested_serializer(self):
+        """
+        Nested serializers are not filtered.
+        """
 
         rf = RequestFactory()
         request = rf.get('/api/v1/schools/1/')

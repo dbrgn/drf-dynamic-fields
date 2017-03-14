@@ -12,7 +12,19 @@ class DynamicFieldsMixin(object):
 
     @property
     def fields(self):
+        """
+        Filters the fields according to the `fields` query parameter.
+
+        a blank `fields` parameter (?fields) will remove all fields.
+        not passing `fields` will pass all fields
+        individual fields are comma separated (?fields=id,name,url,email)
+        """
         fields = super(DynamicFieldsMixin, self).fields
+
+        if not hasattr(self, '_context'):
+            # we are being called before a request cycle.
+            return fields
+
         try:
             request = self.context['request']
         except KeyError:
@@ -24,7 +36,7 @@ class DynamicFieldsMixin(object):
         params = getattr(
             request, 'query_params', getattr(request, 'GET', None)
         )
-        if not params:
+        if params is None:
             warnings.warn('Request object does not contain query paramters')
 
         try:
