@@ -63,9 +63,9 @@ class DynamicFieldsMixin(object):
         for field in existing:
 
             if field not in allowed:
-                fields.pop(field)
+                fields.pop(field, None)
 
             if field in omitted:
-                fields.pop(field)
+                fields.pop(field, None)
 
         return fields

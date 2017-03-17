@@ -127,6 +127,16 @@ class TestDynamicFieldsMixin(TestCase):
             set(('id', 'request_info'))
         )
 
+    def test_omit_non_existant_field(self):
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?omit=pretend')
+        serializer = TeacherSerializer(context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id', 'request_info'))
+        )
+
     def test_as_nested_serializer(self):
         """
         Nested serializers are not filtered.
