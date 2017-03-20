@@ -1,9 +1,14 @@
 language: python
+python:
+  - 2.7
+  - 3.4
+  - 3.6
 env:
-    - TOXENV=py27-django18-drf35
-    - TOXENV=py34-django110-drf36
-    - TOXENV=py36-django110-drf36
+  - DJANGO="<1.9" DRF="<3.6"
+  - DJANGO="<1.9" DRF="<3.7"
+  - DJANGO="<1.11" DRF="<3.6"
+  - DJANGO="<1.11" DRF="<3.7"
 install:
-    - pip install --quiet --use-mirrors tox
+  - pip install "django${DJANGO}" "djangorestframework${DRF}"
 script:
-    - tox
+  - python runtests.py
