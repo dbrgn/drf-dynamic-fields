@@ -64,6 +64,37 @@ the fields:
       ...
     ]
 
+And a query with the `omit` parameter excludes specified fields.
+
+``GET /identities/?omit=data``
+
+.. sourcecode:: json
+
+    [
+      {
+        "id": 1,
+        "url": "http://localhost:8000/api/identities/1/",
+        "type": 5
+      },
+      ...
+    ]
+
+You can use both `fields` and `omit` in the same request!
+
+``GET /identities/?omit=data,fields=data,id``
+
+.. sourcecode:: json
+
+    [
+      {
+        "id": 1
+      },
+      ...
+    ]
+
+
+Though why you would want to do something like that is beyond this author.
+
 It also works on single objects!
 
 ``GET /identities/1/?fields=id,data``
