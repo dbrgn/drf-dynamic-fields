@@ -75,6 +75,68 @@ class TestDynamicFieldsMixin(TestCase):
             }
         )
 
+    def test_omit(self):
+        """
+        Check a basic usage of omit.
+        """
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?omit=request_info')
+        serializer = TeacherSerializer(context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id',))
+        )
+
+    def test_omit_and_fields_used(self):
+        """
+        Can they be used together.
+        """
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?fields=id,request_info&omit=request_info')
+        serializer = TeacherSerializer(context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id',))
+        )
+
+    def test_omit_everything(self):
+        """
+        Can remove it all tediously.
+        """
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?omit=id,request_info')
+        serializer = TeacherSerializer(context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set()
+        )
+
+    def test_omit_nothing(self):
+        """
+        Blank omit doesn't affect anything.
+        """
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?omit')
+        serializer = TeacherSerializer(context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id', 'request_info'))
+        )
+
+    def test_omit_non_existant_field(self):
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?omit=pretend')
+        serializer = TeacherSerializer(context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id', 'request_info'))
+        )
+
     def test_as_nested_serializer(self):
         """
         Nested serializers are not filtered.
