@@ -4,7 +4,6 @@ python:
   - 3.4
   - 3.6
 env:
-  - DJANGO="<1.9" DRF="<3.6"
   - DJANGO="<1.9" DRF="<3.7"
   - DJANGO="<1.11" DRF="<3.6"
   - DJANGO="<1.11" DRF="<3.7"
