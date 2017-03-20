@@ -1,6 +1,10 @@
 Dynamic Serializer Fields for Django REST Framework
 ===================================================
 
+.. image:: https://secure.travis-ci.org/dbrgn/drf-dynamic-fields.png?branch=master
+    :alt: Build status
+    :target: http://travis-ci.org/dbrgn/drf-dynamic-fields
+
 .. image:: https://img.shields.io/pypi/v/drf-dynamic-fields.svg
     :alt: PyPI Version
     :target: https://pypi.python.org/pypi/drf-dynamic-fields
@@ -8,10 +12,6 @@ Dynamic Serializer Fields for Django REST Framework
 .. image:: https://img.shields.io/pypi/dm/drf-dynamic-fields.svg?maxAge=3600
     :alt: PyPI Downloads
     :target: https://pypi.python.org/pypi/drf-dynamic-fields
-
-.. image:: https://img.shields.io/codacy/grade/1a91ba7fd0db4724a722bce1c1a646d6/master.svg?maxAge=86400
-    :alt: Codacy grade
-    :target: https://www.codacy.com/app/dbrgn/drf-dynamic-fields/dashboard
 
 .. image:: https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000
     :alt: License is MIT
