@@ -128,6 +128,19 @@ pass in the request through the context:
     serializer = EventSerializer(events, many=True, context={'request': request})
 
 
+Testing
+-------
+
+To run tests, install Django and DRF and then run ``runtests.py``:
+
+    $ python runtests.py
+
+Alternatively, install tox and run it to test on a variety of different Python
+/ Django / DRF combinations.
+
+    $ tox
+
+
 Credits
 -------
 

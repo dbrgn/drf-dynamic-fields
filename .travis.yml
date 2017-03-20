@@ -1,0 +1,9 @@
+language: python
+env:
+    - TOXENV=py27-django18-drf35
+    - TOXENV=py34-django110-drf36
+    - TOXENV=py36-django110-drf36
+install:
+    - pip install --quiet --use-mirrors tox
+script:
+    - tox
