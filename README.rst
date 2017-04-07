@@ -35,7 +35,7 @@ Example serializer:
 
 .. sourcecode:: python
 
-    class IdentitySerializer(serializers.HyperlinkedModelSerializer):
+    class IdentitySerializer(DynamicFieldsMixin, serializers.HyperlinkedModelSerializer):
         class Meta:
             model = models.Identity
             fields = ('id', 'url', 'type', 'data')
