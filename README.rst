@@ -21,6 +21,13 @@ This package provides a mixin that allows the user to dynamically select only a
 subset of fields per resource.
 
 
+Installing
+----------
+
+::
+
+    pip install drf-dynamic-fields
+
 What It Does
 ------------
 
