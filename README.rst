@@ -120,6 +120,8 @@ When defining a serializer, use the ``DynamicFieldsMixin``:
 
 .. sourcecode:: python
 
+    from drf_dynamic_fields import DynamicFieldsMixin
+
     class IdentitySerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         class Meta:
             model = models.Identity
