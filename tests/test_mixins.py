@@ -141,9 +141,8 @@ class TestDynamicFieldsMixin(TestCase):
         """
         Nested serializers are not filtered.
         """
-
         rf = RequestFactory()
-        request = rf.get('/api/v1/schools/1/')
+        request = rf.get('/api/v1/schools/1/?fields=teachers')
 
         school = School.objects.create()
         teachers = [
@@ -168,6 +167,5 @@ class TestDynamicFieldsMixin(TestCase):
                         ('request_info', request_info.format(teachers[1].id))
                     ])
                 ],
-                'id': school.id
             }
         )

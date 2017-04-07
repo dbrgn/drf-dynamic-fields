@@ -31,7 +31,7 @@ class TeacherSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         )
 
 
-class SchoolSerializer(serializers.ModelSerializer):
+class SchoolSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     """
     Interesting enough serializer because the TeacherSerializer
     will use ListSerializer due to the `many=True`

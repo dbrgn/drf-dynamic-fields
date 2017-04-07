@@ -15,14 +15,22 @@ class DynamicFieldsMixin(object):
         """
         Filters the fields according to the `fields` query parameter.
 
-        a blank `fields` parameter (?fields) will remove all fields.
-        not passing `fields` will pass all fields
-        individual fields are comma separated (?fields=id,name,url,email)
+        A blank `fields` parameter (?fields) will remove all fields. Not
+        passing `fields` will pass all fields individual fields are comma
+        separated (?fields=id,name,url,email).
+
         """
         fields = super(DynamicFieldsMixin, self).fields
 
         if not hasattr(self, '_context'):
-            # we are being called before a request cycle.
+            # We are being called before a request cycle
+            return fields
+
+        # Only filter if this is the root serializer, or if the parent is the
+        # root serializer with many=True
+        is_root = self.root == self
+        parent_is_list_root = self.parent == self.root and getattr(self.parent, 'many', False)
+        if not (is_root or parent_is_list_root):
             return fields
 
         try:
