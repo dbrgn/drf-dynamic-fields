@@ -11,7 +11,7 @@ class Pet(models.Model):
 
 class Teacher(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
-    class_pet = models.ForeignKey(Pet, models.SET_NULL, blank=True, null=True)
+    class_pet = models.ForeignKey(Pet, blank=True, null=True)
 
 
 class School(models.Model):
