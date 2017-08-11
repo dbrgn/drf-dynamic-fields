@@ -12,7 +12,7 @@ from collections import OrderedDict
 from django.test import TestCase, RequestFactory
 
 from .serializers import SchoolSerializer, TeacherSerializer
-from .models import Teacher, School
+from .models import Teacher, School, Pet
 
 
 class TestDynamicFieldsMixin(TestCase):
@@ -43,7 +43,7 @@ class TestDynamicFieldsMixin(TestCase):
 
         self.assertEqual(
             set(serializer.fields.keys()),
-            set(('id', 'request_info'))
+            set(('id', 'request_info', 'name', 'class_pet'))
         )
 
     def test_fields_all_gone(self):
@@ -80,12 +80,12 @@ class TestDynamicFieldsMixin(TestCase):
         Check a basic usage of omit.
         """
         rf = RequestFactory()
-        request = rf.get('/api/v1/schools/1/?omit=request_info')
+        request = rf.get('/api/v1/schools/1/?omit=request_info,class_pet')
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
             set(serializer.fields.keys()),
-            set(('id',))
+            set(('id', 'name'))
         )
 
     def test_omit_and_fields_used(self):
@@ -106,7 +106,7 @@ class TestDynamicFieldsMixin(TestCase):
         Can remove it all tediously.
         """
         rf = RequestFactory()
-        request = rf.get('/api/v1/schools/1/?omit=id,request_info')
+        request = rf.get('/api/v1/schools/1/?omit=id,name,request_info,class_pet')
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
@@ -124,7 +124,7 @@ class TestDynamicFieldsMixin(TestCase):
 
         self.assertEqual(
             set(serializer.fields.keys()),
-            set(('id', 'request_info'))
+            set(('id', 'request_info', 'name', 'class_pet'))
         )
 
     def test_omit_non_existant_field(self):
@@ -134,12 +134,12 @@ class TestDynamicFieldsMixin(TestCase):
 
         self.assertEqual(
             set(serializer.fields.keys()),
-            set(('id', 'request_info'))
+            set(('id', 'request_info', 'name', 'class_pet'))
         )
 
     def test_as_nested_serializer(self):
         """
-        Nested serializers are not filtered.
+        Nested serializers are not filtered, without nested filter paths
         """
         rf = RequestFactory()
         request = rf.get('/api/v1/schools/1/?fields=teachers')
@@ -160,12 +160,125 @@ class TestDynamicFieldsMixin(TestCase):
                 'teachers': [
                     OrderedDict([
                         ('id', teachers[0].id),
-                        ('request_info', request_info.format(teachers[0].id))
+                        ('name', teachers[0].name),
+                        ('request_info', request_info.format(teachers[0].id)),
+                        ('class_pet', None),
                     ]),
                     OrderedDict([
                         ('id', teachers[1].id),
-                        ('request_info', request_info.format(teachers[1].id))
+                        ('name', teachers[1].name),
+                        ('request_info', request_info.format(teachers[1].id)),
+                        ('class_pet', None),
                     ])
                 ],
+            }
+        )
+
+    def test_as_nested_serializer_list_with_filter(self):
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?fields=teachers__id,teachers__class_pet__name')
+
+        pet = Pet.objects.create(name="Hamster", age=1)
+        school = School.objects.create()
+        teachers = [
+            Teacher.objects.create(class_pet=pet),
+            Teacher.objects.create()
+        ]
+        school.teachers.add(*teachers)
+
+        serializer = SchoolSerializer(school, context={'request': request})
+
+        self.assertEqual(
+            serializer.data, {
+                'teachers': [
+                    OrderedDict([
+                        ('id', teachers[0].id),
+                        ('class_pet', OrderedDict([('name', pet.name)])),
+                    ]),
+                    OrderedDict([
+                        ('id', teachers[1].id),
+                        ('class_pet', None),
+                    ])
+                ],
+            }
+        )
+
+    def test_as_nested_serializer_list_with_omit(self):
+        """
+        Nested serializers are not filtered, without nested filter paths
+        """
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?omit=teachers__id,teachers__class_pet__id,teachers__class_pet__age')
+
+        pet = Pet.objects.create(name="Hamster", age=1)
+        school = School.objects.create()
+        teachers = [
+            Teacher.objects.create(class_pet=pet),
+            Teacher.objects.create()
+        ]
+        school.teachers.add(*teachers)
+
+        serializer = SchoolSerializer(school, context={'request': request})
+
+        request_info = 'http://testserver/api/v1/teacher/{}'
+
+        self.assertEqual(
+            serializer.data, {
+                'id': school.id,
+                'teachers': [
+                    OrderedDict([
+                        ('name', teachers[0].name),
+                        ('request_info', request_info.format(teachers[0].id)),
+                        ('class_pet', OrderedDict([('name', pet.name)])),
+                    ]),
+                    OrderedDict([
+                        ('name', teachers[1].name),
+                        ('request_info', request_info.format(teachers[1].id)),
+                        ('class_pet', None),
+                    ])
+                ],
+            }
+        )
+
+    def test_with_nested_field_limiting(self):
+        rf = RequestFactory()
+        request = rf.get('/api/v1/teacher/1/?fields=id,name,class_pet__age')
+
+        pet = Pet.objects.create(name="Hamster", age=2)
+        teacher = Teacher.objects.create(name="Dr. Smith", class_pet=pet)
+
+        serializer = TeacherSerializer(teacher, context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id', 'name', 'class_pet'))
+        )
+
+        self.assertEqual(
+            serializer.data, {
+                'id': teacher.id,
+                'name': teacher.name,
+                'class_pet': OrderedDict([('age', pet.age)])
+            }
+        )
+
+    def test_with_nested_field_omitting(self):
+        rf = RequestFactory()
+        request = rf.get('/api/v1/teacher/1/?omit=name,request_info,class_pet__age')
+
+        pet = Pet.objects.create(name="Hamster", age=2)
+        teacher = Teacher.objects.create(name="Dr. Smith", class_pet=pet)
+
+        serializer = TeacherSerializer(teacher, context={'request': request})
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id', 'class_pet'))
+        )
+
+        self.assertEqual(
+            serializer.data, {
+                'id': teacher.id,
+                'class_pet': OrderedDict([('id', pet.id), ('name', pet.name)])
             }
         )

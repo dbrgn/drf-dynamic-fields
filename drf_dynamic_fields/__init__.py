@@ -1,7 +1,10 @@
 """
 Mixin to dynamically select only a subset of fields per DRF resource.
 """
+import re
 import warnings
+
+_nested_field_pattern = re.compile("__")
 
 
 class DynamicFieldsMixin(object):
@@ -26,13 +29,7 @@ class DynamicFieldsMixin(object):
             # We are being called before a request cycle
             return fields
 
-        # Only filter if this is the root serializer, or if the parent is the
-        # root serializer with many=True
-        is_root = self.root == self
-        parent_is_list_root = self.parent == self.root and getattr(self.parent, 'many', False)
-        if not (is_root or parent_is_list_root):
-            return fields
-
+        current_path = self._build_current_path(self.field_name or "", self.parent)
         try:
             request = self.context['request']
         except KeyError:
@@ -48,18 +45,18 @@ class DynamicFieldsMixin(object):
             warnings.warn('Request object does not contain query paramters')
 
         try:
-            filter_fields = params.get('fields', None).split(',')
+            filter_fields = self._get_params_for_include_path(current_path, params.get('fields', None).split(','))
         except AttributeError:
             filter_fields = None
 
         try:
-            omit_fields = params.get('omit', None).split(',')
+            omit_fields = self._get_params_for_omit_path(current_path, params.get('omit', None).split(','))
         except AttributeError:
             omit_fields = []
 
         # Drop any fields that are not specified in the `fields` argument.
         existing = set(fields.keys())
-        if filter_fields is None:
+        if (len(current_path) == 0 and filter_fields is None) or (len(current_path) > 0 and not filter_fields):
             # no fields param given, don't filter.
             allowed = existing
         else:
@@ -77,3 +74,41 @@ class DynamicFieldsMixin(object):
                 fields.pop(field, None)
 
         return fields
+
+    def _get_params_for_include_path(self, current_path, field_names):
+        path = current_path if len(current_path) == 0 else current_path + "__"
+        current_fields_pattern = re.compile("^"+re.escape(path)+"(.+?)((?:__).+)?$")
+        path_params = set()
+
+        for name in field_names:
+            match = current_fields_pattern.match(name)
+            if match:
+                path_params.add(match.group(1))
+
+        return path_params
+
+    def _get_params_for_omit_path(self, current_path, field_names):
+        path = current_path if len(current_path) == 0 else current_path + "__"
+        nested = len(path) > 0
+        path_params = set()
+
+        for name in field_names:
+            if not nested or name.startswith(path):
+                field = name if not nested else name.split(path, 1)[1]
+                if not _nested_field_pattern.search(field):
+                    path_params.add(field)
+
+        return path_params
+
+    def _build_current_path(self, path, parent):
+        if not parent:
+            return path
+
+        if parent.field_name:
+            new_path = parent.field_name
+            if path:
+                new_path = new_path + "__" + path
+        else:
+            new_path = path
+
+        return self._build_current_path(new_path, parent.parent)

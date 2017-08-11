@@ -5,7 +5,13 @@ from rest_framework import serializers
 
 from drf_dynamic_fields import DynamicFieldsMixin
 
-from .models import Teacher, School
+from .models import Teacher, School, Pet
+
+
+class PetSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+    class Meta:
+        model = Pet
+        fields = ('id', 'name', 'age')
 
 
 class TeacherSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
@@ -15,10 +21,11 @@ class TeacherSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     """
 
     request_info = serializers.SerializerMethodField()
+    class_pet = PetSerializer()
 
     class Meta:
         model = Teacher
-        fields = ('id', 'request_info')
+        fields = ('id', 'name', 'request_info', 'class_pet',)
 
     def get_request_info(self, teacher):
         """
