@@ -174,9 +174,13 @@ class TestDynamicFieldsMixin(TestCase):
             }
         )
 
-    def test_as_nested_serializer_list_with_filter(self):
+    def test_as_nested_list_with_filter(self):
+        """
+        Test filtering on a nested list
+        """
         rf = RequestFactory()
-        request = rf.get('/api/v1/schools/1/?fields=teachers__id,teachers__class_pet__name')
+        request = rf.get(
+            '/api/v1/schools/1/?fields=teachers__id,teachers__class_pet__name')
 
         pet = Pet.objects.create(name="Hamster", age=1)
         school = School.objects.create()
@@ -203,12 +207,14 @@ class TestDynamicFieldsMixin(TestCase):
             }
         )
 
-    def test_as_nested_serializer_list_with_omit(self):
+    def test_as_nested_list_with_omit(self):
         """
         Nested serializers are not filtered, without nested filter paths
         """
         rf = RequestFactory()
-        request = rf.get('/api/v1/schools/1/?omit=teachers__id,teachers__class_pet__id,teachers__class_pet__age')
+        request = rf.get(
+            '/api/v1/schools/1/?omit=teachers__id,teachers__class_pet__id,' +
+            'teachers__class_pet__age')
 
         pet = Pet.objects.create(name="Hamster", age=1)
         school = School.objects.create()
@@ -240,7 +246,10 @@ class TestDynamicFieldsMixin(TestCase):
             }
         )
 
-    def test_with_nested_field_limiting(self):
+    def test_with_nested_field_limit(self):
+        """
+        Test nested scenario limiting top level and nested fields
+        """
         rf = RequestFactory()
         request = rf.get('/api/v1/teacher/1/?fields=id,name,class_pet__age')
 
@@ -262,9 +271,14 @@ class TestDynamicFieldsMixin(TestCase):
             }
         )
 
-    def test_with_nested_field_omitting(self):
+    def test_with_nested_field_omit(self):
+        """
+        Test nested scenario with omit option with both top level and nested
+        fields
+        """
         rf = RequestFactory()
-        request = rf.get('/api/v1/teacher/1/?omit=name,request_info,class_pet__age')
+        request = rf.get(
+            '/api/v1/teacher/1/?omit=name,request_info,class_pet__age')
 
         pet = Pet.objects.create(name="Hamster", age=2)
         teacher = Teacher.objects.create(name="Dr. Smith", class_pet=pet)

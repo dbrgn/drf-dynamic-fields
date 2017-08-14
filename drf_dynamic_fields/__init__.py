@@ -4,7 +4,7 @@ Mixin to dynamically select only a subset of fields per DRF resource.
 import re
 import warnings
 
-_nested_field_pattern = re.compile("__")
+_NESTED_FIELD_PATTERN = re.compile("__")
 
 
 class DynamicFieldsMixin(object):
@@ -45,18 +45,21 @@ class DynamicFieldsMixin(object):
             warnings.warn('Request object does not contain query paramters')
 
         try:
-            filter_fields = self._get_params_for_include_path(current_path, params.get('fields', None).split(','))
+            filter_fields = self._get_params_for_include_path(
+                current_path, params.get('fields', None).split(','))
         except AttributeError:
             filter_fields = None
 
         try:
-            omit_fields = self._get_params_for_omit_path(current_path, params.get('omit', None).split(','))
+            omit_fields = self._get_params_for_omit_path\
+                (current_path, params.get('omit', None).split(','))
         except AttributeError:
             omit_fields = []
 
         # Drop any fields that are not specified in the `fields` argument.
         existing = set(fields.keys())
-        if (len(current_path) == 0 and filter_fields is None) or (len(current_path) > 0 and not filter_fields):
+        if (len(current_path) == 0 and filter_fields is None) or \
+                (len(current_path) > 0 and not filter_fields):
             # no fields param given, don't filter.
             allowed = existing
         else:
@@ -75,7 +78,8 @@ class DynamicFieldsMixin(object):
 
         return fields
 
-    def _get_params_for_include_path(self, current_path, field_names):
+    @classmethod
+    def _get_params_for_include_path(cls, current_path, field_names):
         path = current_path if len(current_path) == 0 else current_path + "__"
         current_fields_pattern = re.compile("^"+re.escape(path)+"(.+?)((?:__).+)?$")
         path_params = set()
@@ -87,7 +91,8 @@ class DynamicFieldsMixin(object):
 
         return path_params
 
-    def _get_params_for_omit_path(self, current_path, field_names):
+    @classmethod
+    def _get_params_for_omit_path(cls, current_path, field_names):
         path = current_path if len(current_path) == 0 else current_path + "__"
         nested = len(path) > 0
         path_params = set()
@@ -95,7 +100,7 @@ class DynamicFieldsMixin(object):
         for name in field_names:
             if not nested or name.startswith(path):
                 field = name if not nested else name.split(path, 1)[1]
-                if not _nested_field_pattern.search(field):
+                if not _NESTED_FIELD_PATTERN.search(field):
                     path_params.add(field)
 
         return path_params

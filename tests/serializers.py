@@ -9,7 +9,13 @@ from .models import Teacher, School, Pet
 
 
 class PetSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+    """
+    Serializer that will be nested to test filtering of nested fields
+    """
     class Meta:
+        """
+        Base off Pet model
+        """
         model = Pet
         fields = ('id', 'name', 'age')
 
