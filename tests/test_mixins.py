@@ -169,3 +169,51 @@ class TestDynamicFieldsMixin(TestCase):
                 ],
             }
         )
+
+    def test_pass_params_via_serializer_context(self):
+        """
+        Params can solely (or additionally) be passed via serializer context.
+        """
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/')
+        context = {
+            'request': request,
+            'omit': 'request_info',
+        }
+        serializer = TeacherSerializer(context=context)
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id',))
+        )
+
+    def test_serializer_context_overwrites_query_params(self):
+        """
+        Params passed via context take precedence over query_params.
+        """
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/?fields=request_info')
+        context = {
+            'request': request,
+            'fields': 'id',
+        }
+        serializer = TeacherSerializer(context=context)
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id',))
+        )
+
+    def test_no_params_passed_at_all(self):
+        """
+        Specifying neither query_params nor context params should not fail.
+        """
+        rf = RequestFactory()
+        request = rf.get('/api/v1/schools/1/')
+        context = {'request': request}
+        serializer = TeacherSerializer(context=context)
+
+        self.assertEqual(
+            set(serializer.fields.keys()),
+            set(('id', 'request_info'))
+        )

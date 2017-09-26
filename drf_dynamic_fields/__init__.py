@@ -10,6 +10,27 @@ class DynamicFieldsMixin(object):
     which fields should be displayed.
     """
 
+    def _collect_params(self, request):
+        """Params can be passed via the GET query or the serializer context.
+
+        Both sources are merged into a unique set, with the context
+        taking predecence over query parameters.
+
+        """
+        params = getattr(
+            request, 'query_params', getattr(request, 'GET', None)
+        )
+
+        if params is not None:
+            params = params.copy()
+
+            for param_name in ('omit', 'fields'):
+                param_value = self.context.get(param_name, None)
+                if param_value is not None:
+                    params[param_name] = param_value
+
+        return params
+
     @property
     def fields(self):
         """
@@ -29,7 +50,8 @@ class DynamicFieldsMixin(object):
         # Only filter if this is the root serializer, or if the parent is the
         # root serializer with many=True
         is_root = self.root == self
-        parent_is_list_root = self.parent == self.root and getattr(self.parent, 'many', False)
+        parent_is_list_root = (self.parent == self.root and
+                               getattr(self.parent, 'many', False))
         if not (is_root or parent_is_list_root):
             return fields
 
@@ -39,13 +61,10 @@ class DynamicFieldsMixin(object):
             warnings.warn('Context does not have access to request')
             return fields
 
-        # NOTE: drf test framework builds a request object where the query
-        # parameters are found under the GET attribute.
-        params = getattr(
-            request, 'query_params', getattr(request, 'GET', None)
-        )
+        params = self._collect_params(request)
+
         if params is None:
-            warnings.warn('Request object does not contain query paramters')
+            warnings.warn('Request object does not contain query parameters')
 
         try:
             filter_fields = params.get('fields', None).split(',')
