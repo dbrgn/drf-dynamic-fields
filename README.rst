@@ -137,6 +137,15 @@ pass in the request through the context:
     serializer = EventSerializer(events, many=True, context={'request': request})
 
 
+In addition to using query parameters to pass ``omit`` and ``fields``, the
+serializer context can be used as well (also taking precedence over the query):
+
+.. sourcecode:: python
+
+    events = Event.objects.all()
+    context = {'request': request, 'omit': 'id,name'}
+    serializer = EventSerializer(events, many=True, context=context)
+
 Testing
 -------
 
