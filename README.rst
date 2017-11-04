@@ -137,6 +137,19 @@ pass in the request through the context:
     serializer = EventSerializer(events, many=True, context={'request': request})
 
 
+Scope
+-----
+
+This library is about filtering fields based on individual requests. It is
+deliberately kept simple and we do not plan to add new features. Feel free to
+contribute improvements, code simplifications and bugfixes though! (See also:
+[#18](https://github.com/dbrgn/drf-dynamic-fields/issues/18))
+
+If you need more advanced filtering features, maybe
+[drf-flex-fields](https://github.com/rsinger86/drf-flex-fields) could be
+something for you.
+
+
 Testing
 -------
 
