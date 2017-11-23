@@ -29,7 +29,7 @@ class TestDynamicFieldsMixin(TestCase):
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
-            set(serializer.fields.keys()),
+            set(serializer._filtered_readable_fields_dict().keys()),
             set(('id',))
         )
 
@@ -42,7 +42,7 @@ class TestDynamicFieldsMixin(TestCase):
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
-            set(serializer.fields.keys()),
+            set(serializer._filtered_readable_fields_dict().keys()),
             set(('id', 'request_info'))
         )
 
@@ -55,7 +55,7 @@ class TestDynamicFieldsMixin(TestCase):
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
-            set(serializer.fields.keys()),
+            set(serializer._filtered_readable_fields_dict().keys()),
             set()
         )
 
@@ -84,7 +84,7 @@ class TestDynamicFieldsMixin(TestCase):
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
-            set(serializer.fields.keys()),
+            set(serializer._filtered_readable_fields_dict().keys()),
             set(('id',))
         )
 
@@ -97,7 +97,7 @@ class TestDynamicFieldsMixin(TestCase):
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
-            set(serializer.fields.keys()),
+            set(serializer._filtered_readable_fields_dict().keys()),
             set(('id',))
         )
 
@@ -110,7 +110,7 @@ class TestDynamicFieldsMixin(TestCase):
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
-            set(serializer.fields.keys()),
+            set(serializer._filtered_readable_fields_dict().keys()),
             set()
         )
 
@@ -123,7 +123,7 @@ class TestDynamicFieldsMixin(TestCase):
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
-            set(serializer.fields.keys()),
+            set(serializer._filtered_readable_fields_dict().keys()),
             set(('id', 'request_info'))
         )
 
@@ -133,7 +133,7 @@ class TestDynamicFieldsMixin(TestCase):
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
-            set(serializer.fields.keys()),
+            set(serializer._filtered_readable_fields_dict().keys()),
             set(('id', 'request_info'))
         )
 

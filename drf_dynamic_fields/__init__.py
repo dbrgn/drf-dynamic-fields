@@ -3,6 +3,8 @@ Mixin to dynamically select only a subset of fields per DRF resource.
 """
 import warnings
 
+from django.utils.functional import cached_property
+
 
 class DynamicFieldsMixin(object):
     """
@@ -10,8 +12,18 @@ class DynamicFieldsMixin(object):
     which fields should be displayed.
     """
 
+    @cached_property
+    def _readable_fields_dict(self):
+        return {
+            name: field for name, field in self.fields.items()
+            if not field.write_only
+        }
+
     @property
-    def fields(self):
+    def _readable_fields(self):
+        return self._filtered_readable_fields_dict().values()
+
+    def _filtered_readable_fields_dict(self):
         """
         Filters the fields according to the `fields` query parameter.
 
@@ -20,7 +32,7 @@ class DynamicFieldsMixin(object):
         separated (?fields=id,name,url,email).
 
         """
-        fields = super(DynamicFieldsMixin, self).fields
+        fields = self._readable_fields_dict
 
         if not hasattr(self, '_context'):
             # We are being called before a request cycle
