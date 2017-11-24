@@ -9,7 +9,7 @@ Tests for `drf-dynamic-fields` mixins
 """
 from collections import OrderedDict
 
-from django.test import TestCase, RequestFactory
+from django.test import Client, TestCase, RequestFactory
 
 from .serializers import SchoolSerializer, TeacherSerializer
 from .models import Teacher, School
@@ -43,7 +43,7 @@ class TestDynamicFieldsMixin(TestCase):
 
         self.assertEqual(
             set(serializer._filtered_readable_fields_dict().keys()),
-            set(('id', 'request_info'))
+            set(('id', 'name', 'request_info'))
         )
 
     def test_fields_all_gone(self):
@@ -85,7 +85,7 @@ class TestDynamicFieldsMixin(TestCase):
 
         self.assertEqual(
             set(serializer._filtered_readable_fields_dict().keys()),
-            set(('id',))
+            set(('id', 'name'))
         )
 
     def test_omit_and_fields_used(self):
@@ -106,7 +106,7 @@ class TestDynamicFieldsMixin(TestCase):
         Can remove it all tediously.
         """
         rf = RequestFactory()
-        request = rf.get('/api/v1/schools/1/?omit=id,request_info')
+        request = rf.get('/api/v1/schools/1/?omit=id,name,request_info')
         serializer = TeacherSerializer(context={'request': request})
 
         self.assertEqual(
@@ -124,7 +124,7 @@ class TestDynamicFieldsMixin(TestCase):
 
         self.assertEqual(
             set(serializer._filtered_readable_fields_dict().keys()),
-            set(('id', 'request_info'))
+            set(('id', 'name', 'request_info'))
         )
 
     def test_omit_non_existant_field(self):
@@ -134,7 +134,7 @@ class TestDynamicFieldsMixin(TestCase):
 
         self.assertEqual(
             set(serializer._filtered_readable_fields_dict().keys()),
-            set(('id', 'request_info'))
+            set(('id', 'name', 'request_info'))
         )
 
     def test_as_nested_serializer(self):
@@ -160,12 +160,29 @@ class TestDynamicFieldsMixin(TestCase):
                 'teachers': [
                     OrderedDict([
                         ('id', teachers[0].id),
+                        ('name', ''),
                         ('request_info', request_info.format(teachers[0].id))
                     ]),
                     OrderedDict([
                         ('id', teachers[1].id),
+                        ('name', ''),
                         ('request_info', request_info.format(teachers[1].id))
                     ])
                 ],
             }
         )
+
+    def test_only_filters_outgoing(self):
+        """
+        Filter only when serializing to_representation.
+        """
+        name = 'Teacher Name'
+
+        # Post with fields=id set, assert that only the id is returned.
+        client = Client()
+        response = client.post('/api/v1/teachers/?fields=id', {'name': name})
+        self.assertEqual(response.data, {'id': 1})
+
+        # Get the previously POST'd teacher and verify that the name was set.
+        response = client.get('/api/v1/teachers/1/?fields=name')
+        self.assertEqual(response.data['name'], name)

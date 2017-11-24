@@ -18,7 +18,7 @@ class TeacherSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Teacher
-        fields = ('id', 'request_info')
+        fields = ('id', 'name', 'request_info')
 
     def get_request_info(self, teacher):
         """

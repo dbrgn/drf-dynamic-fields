@@ -5,7 +5,7 @@ from django.db import models
 
 
 class Teacher(models.Model):
-    """No fields, no fun."""
+    name = models.CharField(max_length=200)
 
 
 class School(models.Model):
