@@ -1,6 +1,7 @@
 """
 Mixin to dynamically select only a subset of fields per DRF resource.
 """
+from collections import OrderedDict
 import warnings
 
 from django.utils.functional import cached_property
@@ -14,10 +15,10 @@ class DynamicFieldsMixin(object):
 
     @cached_property
     def _readable_fields_dict(self):
-        return {
-            name: field for name, field in self.fields.items()
+        return OrderedDict(
+            (name, field) for name, field in self.fields.items()
             if not field.write_only
-        }
+        )
 
     @property
     def _readable_fields(self):
