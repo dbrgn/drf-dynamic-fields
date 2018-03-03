@@ -15,6 +15,10 @@ Possible log types:
 
  - ...
 
+## [0.3.0] - 2018-03-03
+
+ - [changed] Do not apply filter to nested serializers (#14)
+
 ## [0.2.0] - 2017-04-07
 
  - [added] Add `omit` option to exclude fields (#11)
@@ -28,7 +32,8 @@ Possible log types:
 
  - Initial release
 
-[Unreleased]: https://github.com/dbrgn/drf-dynamic-fields/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/dbrgn/drf-dynamic-fields/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/dbrgn/drf-dynamic-fields/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/dbrgn/drf-dynamic-fields/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/dbrgn/drf-dynamic-fields/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/dbrgn/drf-dynamic-fields/releases/tag/v0.1.0
