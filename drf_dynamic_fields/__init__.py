@@ -3,6 +3,8 @@ Mixin to dynamically select only a subset of fields per DRF resource.
 """
 import warnings
 
+from django.conf import settings
+
 
 class DynamicFieldsMixin(object):
     """
@@ -36,7 +38,10 @@ class DynamicFieldsMixin(object):
         try:
             request = self.context['request']
         except KeyError:
-            warnings.warn('Context does not have access to request')
+            conf = getattr(settings, 'DRF_DYNAMIC_FIELDS', {})
+            if not conf.get('SUPPRESS_CONTEXT_WARNING', False) is True:
+                warnings.warn('Context does not have access to request. '
+                              'See README for more information.')
             return fields
 
         # NOTE: drf test framework builds a request object where the query
