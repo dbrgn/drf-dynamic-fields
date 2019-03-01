@@ -13,7 +13,7 @@ Possible log types:
 
 ## [Unreleased]
 
- - ...
+ - [changed] Allow suppressing context warnings (#27)
 
 ## [0.3.0] - 2018-03-03
 

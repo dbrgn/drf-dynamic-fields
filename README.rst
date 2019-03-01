@@ -137,6 +137,27 @@ pass in the request through the context:
     serializer = EventSerializer(events, many=True, context={'request': request})
 
 
+Warnings
+--------
+
+If the request context does not have access to the request, a warning is
+emitted::
+
+   UserWarning: Context does not have access to request.
+
+First, make sure that you are passing the request to the serializer context (see
+"Usage" section).
+
+There are some cases (e.g. nested serializers) where you cannot get rid of the
+warning that way (see `issue 27 <https://github.com/dbrgn/drf-dynamic-fields/issues/27>`_).
+In that case, you can silence the warning through ``settings.py``:
+
+.. sourcecode:: python
+
+   DRF_DYNAMIC_FIELDS = {
+      'SUPPRESS_CONTEXT_WARNING': True,
+   }
+
 Scope
 -----
 
