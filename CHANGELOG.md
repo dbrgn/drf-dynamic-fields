@@ -13,7 +13,9 @@ Possible log types:
 
 ## [Unreleased]
 
- - [changed] Allow suppressing context warnings (#27)
+ - [added] Allow suppressing context warnings (#27)
+ - [changed] Explicitly list supported versions in README
+ - [deprecated] Python 2 support will be dropped in version 0.4
 
 ## [0.3.0] - 2018-03-03
 
