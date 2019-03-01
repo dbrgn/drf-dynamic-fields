@@ -20,6 +20,14 @@ Dynamic Serializer Fields for Django REST Framework
 This package provides a mixin that allows the user to dynamically select only a
 subset of fields per resource.
 
+Official version support:
+
+- Django 1.11, 2.0, 2.1
+- Supported REST Framework versions: 3.8, 3.9
+- Python 2.7 (deprecated), 3.4+
+
+NOTE: Python 2 support is deprecated and will be removed in version 0.4.
+
 
 Installing
 ----------
