@@ -3,7 +3,7 @@ from setuptools import setup
 readme = open('README.rst').read()
 
 setup(name='drf_dynamic_fields',
-      version='0.3.0',
+      version='0.3.1',
       description='Dynamically return subset of Django REST Framework serializer fields',
       author='Danilo Bargen',
       author_email='mail@dbrgn.ch',
@@ -15,7 +15,7 @@ setup(name='drf_dynamic_fields',
       keywords='drf restframework rest_framework django_rest_framework serializers',
       long_description=readme,
       classifiers=[
-          'Development Status :: 4 - Beta',
+          'Development Status :: 5 - Production/Stable',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 2',
           'Programming Language :: Python :: 3',
