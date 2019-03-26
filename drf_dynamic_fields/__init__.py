@@ -34,7 +34,7 @@ class DynamicFieldsMixin(object):
         parent_is_list_root = self.parent == self.root and getattr(self.parent, 'many', False)
         if not (is_root or parent_is_list_root):
             return fields
-
+        
         try:
             request = self.context['request']
         except KeyError:
@@ -42,6 +42,10 @@ class DynamicFieldsMixin(object):
             if not conf.get('SUPPRESS_CONTEXT_WARNING', False) is True:
                 warnings.warn('Context does not have access to request. '
                               'See README for more information.')
+            return fields
+        
+        # Dynamic fields must be used for GET method only
+        if request.method != 'GET':
             return fields
 
         # NOTE: drf test framework builds a request object where the query
