@@ -34,7 +34,7 @@ class DynamicFieldsMixin(object):
         parent_is_list_root = self.parent == self.root and getattr(self.parent, 'many', False)
         if not (is_root or parent_is_list_root):
             return fields
-        
+
         try:
             request = self.context['request']
         except KeyError:
