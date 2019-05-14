@@ -7,8 +7,7 @@ from django.conf import settings
 from rest_framework.serializers import ListSerializer, ModelSerializer
 
 
-
-class DynamicFlexFieldsMixin(object):
+class DynamicFieldsMixin(object):
     """
     A serializer mixin that takes an additional `fields` argument that controls
     which fields should be displayed.
@@ -24,7 +23,7 @@ class DynamicFlexFieldsMixin(object):
         separated (?fields=id,name,url,email).
         
         """
-        fields = super(DynamicFlexFieldsMixin, self).fields
+        fields = super(DynamicFieldsMixin, self).fields
 
         if not hasattr(self, '_context'):
             # We are being called before a request cycle
@@ -110,6 +109,7 @@ class DynamicFlexFieldsMixin(object):
 
         allowed = set(filter(None, filter_fields)) or existing
 
+        # omit fields in the `omit` argument.
         omitted = set(filter(None, omit_fields))
 
         for field in existing:
