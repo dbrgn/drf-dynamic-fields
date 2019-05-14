@@ -29,6 +29,19 @@ Official version support:
 NOTE: Python 2 support is deprecated and will be removed in version 0.4.
 
 
+Scope
+-----
+
+This library is about filtering fields based on individual requests. It is
+deliberately kept simple and we do not plan to add new features (including
+support for nested fields). Feel free to contribute improvements, code
+simplifications and bugfixes though! (See also: `#18
+<https://github.com/dbrgn/drf-dynamic-fields/issues/18>`__)
+
+If you need more advanced filtering features, maybe `drf-flex-fields
+<https://github.com/rsinger86/drf-flex-fields>`_ could be something for you.
+
+
 Installing
 ----------
 
@@ -165,17 +178,6 @@ In that case, you can silence the warning through ``settings.py``:
    DRF_DYNAMIC_FIELDS = {
       'SUPPRESS_CONTEXT_WARNING': True,
    }
-
-Scope
------
-
-This library is about filtering fields based on individual requests. It is
-deliberately kept simple and we do not plan to add new features. Feel free to
-contribute improvements, code simplifications and bugfixes though! (See also:
-`#18 <https://github.com/dbrgn/drf-dynamic-fields/issues/18>`__)
-
-If you need more advanced filtering features, maybe `drf-flex-fields
-<https://github.com/rsinger86/drf-flex-fields>`_ could be something for you.
 
 
 Testing
