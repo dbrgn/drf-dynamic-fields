@@ -59,7 +59,25 @@ A regular request returns all fields:
         "id": 1,
         "url": "http://localhost:8000/api/identities/1/",
         "type": 5,
-        "data": "John Doe"
+        "data": "John Doe",
+        "info": {
+            "city": {
+                "name": "Hyderabad",
+                "radius": 1556,
+                "field1": "value1",
+                "field2": "value2",
+                "field3": "value3",
+                "field4": "value4"
+            },
+            "country": {
+                "name": "India",
+                "population": 133,
+                "field1": "value1",
+                "field2": "value2",
+                "field3": "value3",
+                "field4": "value4"
+            }
+        }
       },
       ...
     ]
@@ -67,21 +85,61 @@ A regular request returns all fields:
 A query with the `fields` parameter on the other hand returns only a subset of
 the fields:
 
-``GET /identities/?fields=id,data``
+``GET /identities/?fields=id,data,info``
 
 .. sourcecode:: json
 
     [
       {
         "id": 1,
-        "data": "John Doe"
+        "data": "John Doe",
+        "info": {
+            "city": {
+                "name": "Hyderabad",
+                "radius": 1556,
+                "field1": "value1",
+                "field2": "value2",
+                "field3": "value3",
+                "field4": "value4"
+            },
+            "country": {
+                "name": "India",
+                "population": 133,
+                "field1": "value1",
+                "field2": "value2",
+                "field3": "value3",
+                "field4": "value4"
+            }
+         }
       },
       ...
     ]
 
-And a query with the `omit` parameter excludes specified fields.
+Also you can filter by nested relationships using '__' to pass through child fields:
 
-``GET /identities/?omit=data``
+``GET /identities/?fields=id,data,info__city__name,info__country__name
+
+.. sourcecode:: json
+
+    [
+      {
+        "id": 1,
+        "data": "John Doe",
+        "info": {
+            "city": {
+                "name": "Hyderabad"
+            },
+            "country": {
+                "name": "India"
+            }
+        }
+      },
+      ...
+    ]
+
+And a query with the `omit` parameter excludes specified fields also supports nested lookups just like that of fields.
+
+``GET /identities/?omit=data,info`
 
 .. sourcecode:: json
 
