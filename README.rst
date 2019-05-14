@@ -1,24 +1,8 @@
 Dynamic Serializer Fields for Django REST Framework
 ===================================================
 
-.. image:: https://secure.travis-ci.org/dbrgn/drf-dynamic-fields.png?branch=master
-    :alt: Build status
-    :target: http://travis-ci.org/dbrgn/drf-dynamic-fields
-
-.. image:: https://img.shields.io/pypi/v/drf-dynamic-fields.svg
-    :alt: PyPI Version
-    :target: https://pypi.python.org/pypi/drf-dynamic-fields
-
-.. image:: https://img.shields.io/pypi/dm/drf-dynamic-fields.svg?maxAge=3600
-    :alt: PyPI Downloads
-    :target: https://pypi.python.org/pypi/drf-dynamic-fields
-
-.. image:: https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000
-    :alt: License is MIT
-    :target: https://github.com/dbrgn/drf-dynamic-fields/blob/master/LICENSE
-
 This package provides a mixin that allows the user to dynamically select only a
-subset of fields per resource.
+subset of fields per resource and also perform nested lookups for filtering in related_objects/relationships.
 
 Official version support:
 
@@ -26,7 +10,6 @@ Official version support:
 - Supported REST Framework versions: 3.8, 3.9
 - Python 2.7 (deprecated), 3.4+
 
-NOTE: Python 2 support is deprecated and will be removed in version 0.4.
 
 
 Installing
@@ -34,7 +17,7 @@ Installing
 
 ::
 
-    pip install drf-dynamic-fields
+    copy the source file :P
 
 What It Does
 ------------
@@ -43,7 +26,7 @@ Example serializer:
 
 .. sourcecode:: python
 
-    class IdentitySerializer(DynamicFieldsMixin, serializers.HyperlinkedModelSerializer):
+    class IdentitySerializer(DynamicFlexFieldsMixin, serializers.HyperlinkedModelSerializer):
         class Meta:
             model = models.Identity
             fields = ('id', 'url', 'type', 'data')
@@ -59,7 +42,25 @@ A regular request returns all fields:
         "id": 1,
         "url": "http://localhost:8000/api/identities/1/",
         "type": 5,
-        "data": "John Doe"
+        "data": "John Doe",
+        "info": {
+            "city": {
+                "name": "Hyderabad",
+                "radius": 1556,
+                "field1": "value1",
+                "field2": "value2",
+                "field3": "value3",
+                "field4": "value4"
+            },
+            "country": {
+                "name": "India",
+                "population": 133,
+                "field1": "value1",
+                "field2": "value2",
+                "field3": "value3",
+                "field4": "value4"
+            }
+        }
       },
       ...
     ]
@@ -67,21 +68,61 @@ A regular request returns all fields:
 A query with the `fields` parameter on the other hand returns only a subset of
 the fields:
 
-``GET /identities/?fields=id,data``
+``GET /identities/?fields=id,data,info``
 
 .. sourcecode:: json
 
     [
       {
         "id": 1,
-        "data": "John Doe"
+        "data": "John Doe",
+        "info": {
+            "city": {
+                "name": "Hyderabad",
+                "radius": 1556,
+                "field1": "value1",
+                "field2": "value2",
+                "field3": "value3",
+                "field4": "value4"
+            },
+            "country": {
+                "name": "India",
+                "population": 133,
+                "field1": "value1",
+                "field2": "value2",
+                "field3": "value3",
+                "field4": "value4"
+            }
+         }
       },
       ...
     ]
 
-And a query with the `omit` parameter excludes specified fields.
+Also you can filter by nested relationships using '__' to pass through child fields:
 
-``GET /identities/?omit=data``
+``GET /identities/?fields=id,data,info__city__name,info__country__name
+
+.. sourcecode:: json
+
+    [
+      {
+        "id": 1,
+        "data": "John Doe",
+        "info": {
+            "city": {
+                "name": "Hyderabad"
+            },
+            "country": {
+                "name": "India"
+            }
+        }
+      },
+      ...
+    ]
+
+And a query with the `omit` parameter excludes specified fields also supports nested lookups just like that of fields.
+
+``GET /identities/?omit=data,info`
 
 .. sourcecode:: json
 
@@ -94,21 +135,8 @@ And a query with the `omit` parameter excludes specified fields.
       ...
     ]
 
-You can use both `fields` and `omit` in the same request!
-
-``GET /identities/?omit=data,fields=data,id``
-
-.. sourcecode:: json
-
-    [
-      {
-        "id": 1
-      },
-      ...
-    ]
 
 
-Though why you would want to do something like that is beyond this author.
 
 It also works on single objects!
 
@@ -124,13 +152,13 @@ It also works on single objects!
 Usage
 -----
 
-When defining a serializer, use the ``DynamicFieldsMixin``:
+When defining a serializer, use the ``DynamicFlexFieldsMixin``:
 
 .. sourcecode:: python
 
-    from drf_dynamic_fields import DynamicFieldsMixin
+    from drf_dynamic_fields import DynamicFlexFieldsMixin
 
-    class IdentitySerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+    class IdentitySerializer(DynamicFlexFieldsMixin, serializers.ModelSerializer):
         class Meta:
             model = models.Identity
             fields = ('id', 'url', 'type', 'data')
@@ -156,32 +184,17 @@ emitted::
 First, make sure that you are passing the request to the serializer context (see
 "Usage" section).
 
-There are some cases (e.g. nested serializers) where you cannot get rid of the
-warning that way (see `issue 27 <https://github.com/dbrgn/drf-dynamic-fields/issues/27>`_).
-In that case, you can silence the warning through ``settings.py``:
-
-.. sourcecode:: python
-
-   DRF_DYNAMIC_FIELDS = {
-      'SUPPRESS_CONTEXT_WARNING': True,
-   }
 
 Scope
 -----
 
-This library is about filtering fields based on individual requests. It is
-deliberately kept simple and we do not plan to add new features. Feel free to
-contribute improvements, code simplifications and bugfixes though! (See also:
-`#18 <https://github.com/dbrgn/drf-dynamic-fields/issues/18>`__)
-
-If you need more advanced filtering features, maybe `drf-flex-fields
-<https://github.com/rsinger86/drf-flex-fields>`_ could be something for you.
+This library is about filtering fields passed via url query params which also supports nested lookups filtering,it is based on https://github.com/dbrgn/drf-dynamic-fields. drf-dynamic-fields was deliberately kept simple and we do not plan to add new features, so i've added support for nested lookups taking drf-dynamic-fields as source/inspiration
 
 
 Testing
 -------
 
-To run tests, install Django and DRF and then run ``runtests.py``:
+To run tests, install Django and DRF and then run ``runtests.py``, haven't added any additional tests for nested lookups :
 
     $ python runtests.py
 
@@ -190,13 +203,9 @@ Credits
 -------
 
 - The implementation is based on `this
-  <http://stackoverflow.com/a/23674297/284318>`__ StackOverflow answer. Thanks
-  ``YAtOff``!
-- The GitHub users ``X17`` and ``rawbeans`` provided improvements on `my gist
-  <https://gist.github.com/dbrgn/4e6fc1fe5922598592d6>`__ that were incorporated
-  into this library. Thanks!
-- For other contributors, please see `Github contributor stats
-  <https://github.com/dbrgn/drf-dynamic-fields/graphs/contributors>`__.
+  https://github.com/dbrgn/drf-dynamic-fields . Thanks
+  ``Danilo Bargen``!
+- Credits to Martin Garrix for his music which bought me enough motivation to implement this
 
 
 License
