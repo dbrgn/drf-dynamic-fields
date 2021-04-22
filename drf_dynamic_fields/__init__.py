@@ -4,6 +4,7 @@ Mixin to dynamically select only a subset of fields per DRF resource.
 import warnings
 
 from django.conf import settings
+from django.utils.functional import cached_property
 
 
 class DynamicFieldsMixin(object):
@@ -12,7 +13,7 @@ class DynamicFieldsMixin(object):
     which fields should be displayed.
     """
 
-    @property
+    @cached_property
     def fields(self):
         """
         Filters the fields according to the `fields` query parameter.
