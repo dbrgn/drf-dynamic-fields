@@ -1,5 +1,10 @@
 # -*- coding: utf-8
-"""
-Empty urls for test.
-"""
-urlpatterns = []  # noqa.
+from rest_framework import routers
+
+from .views import SchoolViewSet, TeacherViewSet
+
+router = routers.SimpleRouter()
+router.register("teachers", TeacherViewSet)
+router.register("schools", SchoolViewSet)
+
+urlpatterns = router.urls
