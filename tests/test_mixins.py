@@ -38,7 +38,9 @@ class TestDynamicFieldsMixin(TestCase):
         request = rf.get("/api/v1/schools/1/")
         serializer = TeacherSerializer(context={"request": request})
 
-        self.assertEqual(set(serializer.fields.keys()), set(("id", "request_info")))
+        self.assertEqual(
+            set(serializer.fields.keys()), set(("id", "request_info", "age", "name"))
+        )
 
     def test_fields_all_gone(self):
         """
@@ -55,12 +57,12 @@ class TestDynamicFieldsMixin(TestCase):
         Check the full JSON output of the serializer.
         """
         rf = RequestFactory()
-        request = rf.get("/api/v1/schools/1/?fields=id")
+        request = rf.get("/api/v1/schools/1/?fields=id,age")
         teacher = Teacher.objects.create(name="Susan", age=34)
 
         serializer = TeacherSerializer(teacher, context={"request": request})
 
-        self.assertEqual(serializer.data, {"id": teacher.id})
+        self.assertEqual(serializer.data, {"id": teacher.id, "age": teacher.age})
 
     def test_omit(self):
         """
@@ -70,7 +72,7 @@ class TestDynamicFieldsMixin(TestCase):
         request = rf.get("/api/v1/schools/1/?omit=request_info")
         serializer = TeacherSerializer(context={"request": request})
 
-        self.assertEqual(set(serializer.fields.keys()), set(("id",)))
+        self.assertEqual(set(serializer.fields.keys()), set(("id", "name", "age")))
 
     def test_omit_and_fields_used(self):
         """
@@ -87,7 +89,7 @@ class TestDynamicFieldsMixin(TestCase):
         Can remove it all tediously.
         """
         rf = RequestFactory()
-        request = rf.get("/api/v1/schools/1/?omit=id,request_info")
+        request = rf.get("/api/v1/schools/1/?omit=id,request_info,age,name")
         serializer = TeacherSerializer(context={"request": request})
 
         self.assertEqual(set(serializer.fields.keys()), set())
@@ -100,14 +102,18 @@ class TestDynamicFieldsMixin(TestCase):
         request = rf.get("/api/v1/schools/1/?omit")
         serializer = TeacherSerializer(context={"request": request})
 
-        self.assertEqual(set(serializer.fields.keys()), set(("id", "request_info")))
+        self.assertEqual(
+            set(serializer.fields.keys()), set(("id", "request_info", "name", "age"))
+        )
 
     def test_omit_non_existant_field(self):
         rf = RequestFactory()
         request = rf.get("/api/v1/schools/1/?omit=pretend")
         serializer = TeacherSerializer(context={"request": request})
 
-        self.assertEqual(set(serializer.fields.keys()), set(("id", "request_info")))
+        self.assertEqual(
+            set(serializer.fields.keys()), set(("id", "request_info", "name", "age"))
+        )
 
     def test_as_nested_serializer(self):
         """
@@ -135,12 +141,16 @@ class TestDynamicFieldsMixin(TestCase):
                         [
                             ("id", teachers[0].id),
                             ("request_info", request_info.format(teachers[0].id)),
+                            ("age", teachers[0].age),
+                            ("name", teachers[0].name),
                         ]
                     ),
                     OrderedDict(
                         [
                             ("id", teachers[1].id),
                             ("request_info", request_info.format(teachers[1].id)),
+                            ("age", teachers[1].age),
+                            ("name", teachers[1].name),
                         ]
                     ),
                 ],
