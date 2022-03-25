@@ -5,9 +5,12 @@ from django.db import models
 
 
 class Teacher(models.Model):
-    """No fields, no fun."""
+    name = models.CharField(max_length=30)
+    age = models.IntegerField()
 
 
 class School(models.Model):
     """Schools just have teachers, no students."""
+
+    name = models.CharField(max_length=30)
     teachers = models.ManyToManyField(Teacher)
