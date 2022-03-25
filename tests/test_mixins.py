@@ -3,7 +3,7 @@
 
 """
 test_drf-dynamic-fields
-------------
+-----------
 
 Tests for `drf-dynamic-fields` mixins
 """
