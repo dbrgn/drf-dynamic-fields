@@ -13,7 +13,8 @@ Possible log types:
 
 ## [Unreleased]
 
- - ...
+ - [changed] Python 2 support dropped
+ - [changed] Django <2.2 support dropped
 
 ## [0.3.1] - 2019-03-01
 
