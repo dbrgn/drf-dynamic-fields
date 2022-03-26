@@ -22,11 +22,9 @@ subset of fields per resource.
 
 Official version support:
 
-- Django 1.11, 2.0, 2.1
+- Django 2.2 LTS, 3.2 LTS, 4.0
 - Supported REST Framework versions: 3.8, 3.9
-- Python 2.7 (deprecated), 3.4+
-
-NOTE: Python 2 support is deprecated and will be removed in version 0.4.
+- Python 3.7+
 
 
 Scope
