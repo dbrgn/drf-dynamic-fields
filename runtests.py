@@ -5,8 +5,6 @@ Run tests with python runtests.py
 
 Taken from the django cookiecutter project.
 """
-from __future__ import unicode_literals, absolute_import
-
 import os
 import sys
 
