@@ -20,6 +20,7 @@ jobs:
           - { django: '<2', drf: '<3.9' }
           - { django: '<2.1', drf: '<3.9' }
           - { django: '<2.2', drf: '<3.9' }
+      fail-fast: false
     name: Python ${{ matrix.python }} / Django ${{ matrix.deps.django }} / DRF ${{ matrix.deps.drf }}
     steps:
       - uses: actions/checkout@v2
