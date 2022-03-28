@@ -156,3 +156,22 @@ class TestDynamicFieldsMixin(TestCase):
                 ],
             },
         )
+
+    def test_serializer_reuse_with_changing_request(self):
+        """
+        `fields` is a cached property. Changing the request on an already
+        instantiated serializer will not result in a changed fields attribute.
+
+        This was a deliberate choice we have made in favor of speeding up
+        access to the slow `fields` attribute.
+        """
+
+        rf = RequestFactory()
+        request = rf.get("/api/v1/schools/1/?fields=id")
+        serializer = TeacherSerializer(context={"request": request})
+        self.assertEqual(set(serializer.fields.keys()), {"id"})
+
+        # now change the request on this instantiated serializer.
+        request2 = rf.get("/api/v1/schools/1/?fields=id,name")
+        serializer.context["request"] = request2
+        self.assertEqual(set(serializer.fields.keys()), {"id"})
