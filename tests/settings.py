@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sites",
     "drf_dynamic_fields",
-    "tests"
+    "tests",
 ]
 
 SITE_ID = 1

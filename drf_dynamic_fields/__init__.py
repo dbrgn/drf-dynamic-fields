@@ -25,41 +25,43 @@ class DynamicFieldsMixin(object):
         """
         fields = super(DynamicFieldsMixin, self).fields
 
-        if not hasattr(self, '_context'):
+        if not hasattr(self, "_context"):
             # We are being called before a request cycle
             return fields
 
         # Only filter if this is the root serializer, or if the parent is the
         # root serializer with many=True
         is_root = self.root == self
-        parent_is_list_root = self.parent == self.root and getattr(self.parent, 'many', False)
+        parent_is_list_root = self.parent == self.root and getattr(
+            self.parent, "many", False
+        )
         if not (is_root or parent_is_list_root):
             return fields
 
         try:
-            request = self.context['request']
+            request = self.context["request"]
         except KeyError:
-            conf = getattr(settings, 'DRF_DYNAMIC_FIELDS', {})
-            if not conf.get('SUPPRESS_CONTEXT_WARNING', False) is True:
-                warnings.warn('Context does not have access to request. '
-                              'See README for more information.')
+            conf = getattr(settings, "DRF_DYNAMIC_FIELDS", {})
+            if not conf.get("SUPPRESS_CONTEXT_WARNING", False) is True:
+                warnings.warn(
+                    "Context does not have access to request. "
+                    "See README for more information."
+                )
             return fields
 
         # NOTE: drf test framework builds a request object where the query
         # parameters are found under the GET attribute.
-        params = getattr(
-            request, 'query_params', getattr(request, 'GET', None)
-        )
+        params = getattr(request, "query_params", getattr(request, "GET", None))
         if params is None:
-            warnings.warn('Request object does not contain query parameters')
+            warnings.warn("Request object does not contain query parameters")
 
         try:
-            filter_fields = params.get('fields', None).split(',')
+            filter_fields = params.get("fields", None).split(",")
         except AttributeError:
             filter_fields = None
 
         try:
-            omit_fields = params.get('omit', None).split(',')
+            omit_fields = params.get("omit", None).split(",")
         except AttributeError:
             omit_fields = []
 
