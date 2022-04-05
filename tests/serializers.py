@@ -18,17 +18,15 @@ class TeacherSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Teacher
-        fields = ('id', 'request_info')
+        fields = ("id", "request_info", "age", "name")
 
     def get_request_info(self, teacher):
         """
         a meaningless method that attempts
         to access the request object.
         """
-        request = self.context['request']
-        return request.build_absolute_uri(
-            '/api/v1/teacher/{}'.format(teacher.pk)
-        )
+        request = self.context["request"]
+        return request.build_absolute_uri("/api/v1/teacher/{}".format(teacher.pk))
 
 
 class SchoolSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
@@ -41,4 +39,4 @@ class SchoolSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     class Meta:
         model = School
-        fields = ('id', 'teachers')
+        fields = ("id", "teachers", "name")
