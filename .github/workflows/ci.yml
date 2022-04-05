@@ -34,12 +34,12 @@ jobs:
       - name: Run tests
         run: python runtests.py
 
-    #check-formatting:
-    #  runs-on: ubuntu-latest
-    #  name: Check code formatting
-    #  steps:
-    #    - uses: actions/checkout@v2
-    #    - name: Black Code Formatter
-    #      uses: lgeiger/black-action@master
-    #      with:
-    #        args: "drf_dynamic_fields --check --diff"
+  check-formatting:
+    runs-on: ubuntu-latest
+    name: Check code formatting
+    steps:
+      - uses: actions/checkout@v2
+      - name: Black Code Formatter
+        uses: lgeiger/black-action@master
+        with:
+          args: "drf_dynamic_fields tests runtests.py --check --diff"
