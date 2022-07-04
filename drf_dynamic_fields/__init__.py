@@ -48,6 +48,10 @@ class DynamicFieldsMixin(object):
                     "See README for more information."
                 )
             return fields
+        
+        # Dynamic fields must be used for GET method only
+        if request.method != 'GET':
+            return fields
 
         # NOTE: drf test framework builds a request object where the query
         # parameters are found under the GET attribute.
