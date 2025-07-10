@@ -14,3 +14,12 @@ class School(models.Model):
 
     name = models.CharField(max_length=30)
     teachers = models.ManyToManyField(Teacher)
+
+
+class Child(models.Model):
+    secret = models.CharField(max_length=100)
+    public = models.CharField(max_length=100)
+
+
+class Parent(models.Model):
+    child = models.ForeignKey(Child, on_delete=models.CASCADE)

@@ -3,16 +3,12 @@ For the tests.
 """
 from rest_framework import serializers
 
-from drf_dynamic_fields import DynamicFieldsMixin
+from drf_dynamic_fields import DynamicFieldsMixin, NestedDynamicFieldsMixin
 
-from .models import Teacher, School
+from .models import Teacher, School, Child
 
 
-class TeacherSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
-    """
-    The request_info field is to highlight the issue accessing request during
-    a nested serializer.
-    """
+class BaseTeacherSerializer(serializers.ModelSerializer):
 
     request_info = serializers.SerializerMethodField()
 
@@ -29,14 +25,44 @@ class TeacherSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         return request.build_absolute_uri("/api/v1/teacher/{}".format(teacher.pk))
 
 
-class SchoolSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+class TeacherSerializer(DynamicFieldsMixin, BaseTeacherSerializer):
+    pass
+
+
+class NestableTeacherSerializer(NestedDynamicFieldsMixin, BaseTeacherSerializer):
     """
-    Interesting enough serializer because the TeacherSerializer
-    will use ListSerializer due to the `many=True`
+    The request_info field is to highlight the issue accessing request during
+    a nested serializer.
+
     """
 
-    teachers = TeacherSerializer(many=True, read_only=True)
+class BaseSchoolSerializer(serializers.ModelSerializer):
+
 
     class Meta:
         model = School
         fields = ("id", "teachers", "name")
+
+
+class SchoolSerializer(DynamicFieldsMixin, BaseSchoolSerializer):
+    teachers = TeacherSerializer(many=True, read_only=True)
+
+
+class NestableSchoolSerializer(NestedDynamicFieldsMixin, BaseSchoolSerializer):
+    """
+    Interesting enough serializer because the TeacherSerializer
+    will use ListSerializer due to the `many=True`
+    """
+    teachers = NestableTeacherSerializer(many=True, read_only=True)
+
+class ChildSerializer(NestedDynamicFieldsMixin, serializers.Serializer):
+    secret = serializers.CharField()
+    public = serializers.CharField()
+
+    class Meta:
+        model = Child
+
+
+class ParentSerializer(NestedDynamicFieldsMixin, serializers.Serializer):
+    id = serializers.IntegerField()
+    child = ChildSerializer()
